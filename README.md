@@ -1,3 +1,4 @@
+# triangles_counting
 This program implements Scalable Triangle Counting algorithm introduced by S.Acerm, A.Yasar, S.Rajamanickam, M.Wolf and U.Catalyurek [1].
 <br>
 Graph is read from an input file created by RandomGraph generator by S.Pettie and V.Ramachandran [2].

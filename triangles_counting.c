@@ -23,6 +23,10 @@ int** matrix;    // Graph nodes matrix.
 void calculate_triangles() {
     int triangles_count = 0;
     int** mult = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
+    if (mult == NULL) {
+      printf("Error: malloc for mult failed.\n");
+      exit(1);
+    }
     int* ptr = (int*)(mult + nodes_count);
     for (int i = 0; i < nodes_count; i++) {
         mult[i] = (ptr + nodes_count * i);
@@ -44,6 +48,10 @@ void initialize_matrix() {
     int i,j,fscanf_result;
     double w;
     matrix = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
+    if (matrix == NULL) {
+      printf("Error: malloc for matrix failed.\n");
+      exit(1);
+    }
     int* ptr = (int*)(matrix + nodes_count);
     for(i = 0; i < nodes_count; i++) {
         matrix[i] = (ptr + nodes_count * i);        

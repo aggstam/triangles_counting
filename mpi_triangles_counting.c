@@ -42,6 +42,10 @@ int triangles_count;                // Triangles found by each process.
 void calculate_triangles() {
     int triangles_count = 0;
     int** mult = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
+    if (mult == NULL) {
+      printf("Error: malloc for mult failed.\n");
+      exit(1);
+    }
     int* ptr = (int*)(mult + nodes_count);
     for (int i = 0; i < nodes_count; i++) {
         mult[i] = (ptr + nodes_count * i);
@@ -63,6 +67,10 @@ void initialize_matrix() {
     int i,j,fscanf_result;
     double w;
     matrix = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
+    if (matrix == NULL) {
+      printf("Error: malloc for matrix failed.\n");
+      exit(1);
+    }
     int* ptr = (int*)(matrix + nodes_count);
     for(i = 0; i < nodes_count; i++) {
         matrix[i] = (ptr + nodes_count * i);        
@@ -154,6 +162,10 @@ void calculate_local_triangles_master() {
 
     triangles_count = 0;
     int** mult = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * n * n);
+    if (mult == NULL) {
+      printf("Error: malloc for mult failed.\n");
+      exit(1);
+    }
     int* ptrm = (int*)(mult + nodes_count);
     for (i=0; i<n; i++) {
         mult[i] = (ptrm + n * i);
@@ -178,6 +190,10 @@ void calculate_local_triangles_slave() {
     int i,j,k,b;
     triangles_count = 0;
     int** mult = (int **)malloc(sizeof(int *) * n + sizeof(int) * n * n);
+    if (mult == NULL) {
+      printf("Error: malloc for mult failed.\n");
+      exit(1);
+    }
     int* mult_ptr = (int *)(mult + n);
 
     for (i = 0; i < n; i++) {
@@ -228,10 +244,22 @@ void receive_blocks_from_other_processes() {
 
     // Allocate memory for retrieving required Blocks.
     multiplication_blocks = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * ((q_j+1)*n));
+    if (multiplication_blocks == NULL) {
+      printf("Error: malloc for multiplication_blocks failed.\n");
+      exit(1);
+    }
     int* multiplication_blocks_ptr = (int*)(multiplication_blocks + n);
     el_multiplication_blocks = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * ((q_j+1)*n));
+    if (el_multiplication_blocks == NULL) {
+      printf("Error: malloc for el_multiplication_blocks failed.\n");
+      exit(1);
+    }
     int* el_multiplication_blocks_ptr = (int*)(el_multiplication_blocks + n);
     int** buffer = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * n);
+    if (buffer == NULL) {
+      printf("Error: malloc for buffer failed.\n");
+      exit(1);
+    }
     int* buffer_ptr = (int*)(buffer + n);
     for (i = 0; i < n; i++) {
         multiplication_blocks[i] = (multiplication_blocks_ptr + ((q_j+1)*n) * i);
@@ -302,6 +330,10 @@ void receive_blocks_from_other_processes() {
 void retrieve_q_mapping() {
     int i,j;
     qmap = (int**)malloc(sizeof(int*) * q + sizeof(int) * q * q);
+    if (qmap == NULL) {
+      printf("Error: malloc for qmap failed.\n");
+      exit(1);
+    }
     int* qptr = (int*)(qmap + q);
     for (i = 0; i < q; i++) {
         qmap[i] = (qptr + q * i);
@@ -327,6 +359,10 @@ void receive_block() {
     // Retrieve Block size in order to allocate memory for retrieving the Block.
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     block = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * n);
+    if (block == NULL) {
+      printf("Error: malloc for block failed.\n");
+      exit(1);
+    }
     int* ptr = (int*)(block + n);
     for (i = 0; i < n; i++) {
         block[i] = (ptr + n * i);            
@@ -340,6 +376,10 @@ void scatter_blocks() {
     int i,j,p,q_row,q_column,p_row,p_column,counter;
     
     qmap = (int**)malloc(sizeof(int*) * q + sizeof(int) * q * q);
+    if (qmap == NULL) {
+      printf("Error: malloc for qmap failed.\n");
+      exit(1);
+    }
     int* qptr = (int*)(qmap + q);
     for (i = 0; i < q; i++) {
         qmap[i] = (qptr + q * i);
@@ -349,6 +389,10 @@ void scatter_blocks() {
     n = nodes_count/q;
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);    
     block = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * n);
+    if (block == NULL) {
+      printf("Error: malloc for block failed.\n");
+      exit(1);
+    }
     int* ptr = (int*)(block + n);
     for (i=0; i<n; i++) {
         block[i] = (ptr + n * i);

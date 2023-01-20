@@ -5,12 +5,61 @@ Graph is read from an input file created by RandomGraph generator by S.Pettie an
 <br>
 Two implementations are included, one executing the algorithm in serial, and one using the MPI Standard.
 <br>
+MPI implementation requires *openmpi* package to be installed.
+<br>
 Graph Matrix is conformally partioned to blocks, based on MPI processes.
 <br>
 Each process is assigned with a block and calculate a local triangles count.
 <br>
 In order to calculate the local triangles count, required blocks are retrieved from other processes, based on the algorithm.
-<br>
+
+# Usage
+Both version can be invocted via the Makefile, or by directly compiling and executing.
+
+## Make usage
+### Normal code
+```
+% make
+```
+To include a different input file:
+```
+% make FILE={file_path}
+```
+
+### MPI code
+```
+% make mpi
+```
+To configure different how many processes to use:
+```
+% make mpi PROCESSES={processes}
+```
+To include a different input file:
+```
+% make mpi FILE={file_path}
+```
+
+## Direct usage
+### Normal code
+Compilation:
+```
+% gcc -o triangles_counting triangles_counting.c
+```
+Execution:
+```
+% ./triangles_counting {input_file}
+```
+
+### MPI code
+Compilation:
+```
+% mpicc -lm -o mpi_triangles_counting mpi_triangles_counting.c
+```
+Execution:
+```
+% mpiexec -np {processes} ./mpi_triangles_counting {input_file}
+```
+
 <br>
 References:
 <br>

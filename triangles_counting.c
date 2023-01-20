@@ -14,23 +14,21 @@
 #include <stdlib.h>
 #include <time.h>
 
-FILE *fin; // Input file.
+FILE* fin;       // Input file.
 int nodes_count; // Graph nodes count.
-int **matrix; // Graph nodes matrix.
+int** matrix;    // Graph nodes matrix.
 
 // This function calculates triangles in a Graph, by performing (M*M).*M calculation, for
 // the elements below the Graph matrix diagonal.
 void calculate_triangles() {
-    int i,j,k;
-    
     int triangles_count = 0;
-    int **mult = (int **)malloc(sizeof(int *) * nodes_count + sizeof(int) * nodes_count * nodes_count);
-    int *ptr = (int *)(mult + nodes_count);
-    for (i=0; i<nodes_count; i++) {
+    int** mult = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
+    int* ptr = (int*)(mult + nodes_count);
+    for (int i = 0; i < nodes_count; i++) {
         mult[i] = (ptr + nodes_count * i);
-        for (j=0; j<i; j++) {
+        for (int j = 0; j < i; j++) {
             mult[i][j] = 0;    
-            for (k=0; k<i; k++) {
+            for (int k = 0; k < i; k++) {
                 mult[i][j] += matrix[i][k] * matrix[k][j];
             }
             triangles_count += mult[i][j] * matrix[i][j];
@@ -45,12 +43,11 @@ void calculate_triangles() {
 void initialize_matrix() {
     int i,j,fscanf_result;
     double w;
-
-    matrix = (int **)malloc(sizeof(int *) * nodes_count + sizeof(int) * nodes_count * nodes_count);
-    int *ptr = (int *)(matrix + nodes_count);
-    for(i=0; i<nodes_count; i++) {
+    matrix = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
+    int* ptr = (int*)(matrix + nodes_count);
+    for(i = 0; i < nodes_count; i++) {
         matrix[i] = (ptr + nodes_count * i);        
-        for (j=0; j<nodes_count; j++) {
+        for (j = 0; j < nodes_count; j++) {
             matrix[i][j] = 0;            
         }
     }            
@@ -70,8 +67,8 @@ void initialize_matrix() {
 
 // Auxiliary function that displays a message in case of wrong input parameters.
 // Inputs:
-//        char *compiled_name: Programms compiled name.
-void syntax_message(char *compiled_name) {
+//      char* compiled_name: Programms compiled name.
+void syntax_message(char* compiled_name) {
     printf("Correct syntax:\n");
     printf("%s <input-file> \n", compiled_name);
     printf("where: \n");
@@ -81,12 +78,12 @@ void syntax_message(char *compiled_name) {
 // This function checks run-time parameters validity and
 // retrieves D-step value, input and output file names.
 // Inputs:
-//        char **argv: The run-time parameters.
+//      char** argv: The run-time parameters.
 // Output:
-//         1 --> Parameters read succussfully.
-//        0 --> Something went wrong.
-int read_parameters(char **argv) {
-    char *input_filename = argv[1];
+//      1 --> Parameters read succussfully.
+//      0 --> Something went wrong.
+int read_parameters(char** argv) {
+    char* input_filename = argv[1];
     if (input_filename == NULL) {
         printf("Input file parameter missing.\n");
         syntax_message(argv[0]);
@@ -103,7 +100,7 @@ int read_parameters(char **argv) {
     return 1;
 }
 
-int main(int argc, char **argv) {    
+int main(int argc, char** argv) {
     // Run-time parameters check.
     if (!read_parameters(argv)) {
         printf("Program terminates.\n");

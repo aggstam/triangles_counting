@@ -13,11 +13,11 @@ Each process is assigned with a block and calculate a local triangles count.
 <br>
 In order to calculate the local triangles count, required blocks are retrieved from other processes, based on the algorithm.
 
-# Usage
+## Usage
 Both version can be invocted via the Makefile, or by directly compiling and executing.
 
-## Make usage
-### Normal code
+### Make usage
+#### Normal code
 ```
 % make
 ```
@@ -26,7 +26,7 @@ To include a different input file:
 % make FILE={file_path}
 ```
 
-### MPI code
+#### MPI code
 ```
 % make mpi
 ```
@@ -39,8 +39,8 @@ To include a different input file:
 % make mpi FILE={file_path}
 ```
 
-## Direct usage
-### Normal code
+### Direct usage
+#### Normal code
 Compilation:
 ```
 % gcc -o triangles_counting triangles_counting.c
@@ -50,7 +50,7 @@ Execution:
 % ./triangles_counting {input_file}
 ```
 
-### MPI code
+#### MPI code
 Compilation:
 ```
 % mpicc -lm -o mpi_triangles_counting mpi_triangles_counting.c
@@ -60,9 +60,7 @@ Execution:
 % mpiexec -np {processes} ./mpi_triangles_counting {input_file}
 ```
 
-<br>
-References:
-<br>
+## References
 [1] S. Acer, A. Yaşar, S. Rajamanickam, M. Wolf and Ü. V. Catalyürek, "Scalable Triangle Counting on Distributed-Memory Systems," 2019 IEEE High Performance Extreme Computing Conference (HPEC), 2019, pp. 1-5, doi: 10.1109/HPEC.2019.8916302.
 <br>
 [2] http://www.dis.uniroma1.it/challenge9/code/Randgraph.tar.gz

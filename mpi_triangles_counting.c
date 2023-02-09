@@ -20,14 +20,14 @@
 #include <time.h>
 #include <math.h>
 
-FILE* fin;                          // Input file.
+FILE *fin;                          // Input file.
 int nodes_count;                    // Graph nodes count.
 int blocks_count;                   // Blocks to process count.
-int** matrix;                       // Graph nodes matrix.
-int** block;                        // Assigned block.
-int** multiplication_blocks;        // Received blocks for matrix multiplication.
-int** el_multiplication_blocks;     // Received blocks for multiplication per element.
-int** qmap;                         // Mapping of assigned blocks to processes.
+int **matrix;                       // Graph nodes matrix.
+int **block;                        // Assigned block.
+int **multiplication_blocks;        // Received blocks for matrix multiplication.
+int **el_multiplication_blocks;     // Received blocks for multiplication per element.
+int **qmap;                         // Mapping of assigned blocks to processes.
 int q_i,q_j;                        // Position of assigned processes.
 int rank;                           // MPI Process rank.
 int size;                           // MPI Process count.
@@ -39,14 +39,15 @@ int triangles_count;                // Triangles found by each process.
 
 // This function calculates triangles in a Graph, by performing (M*M).*M calculation, for
 // the elements below the Graph matrix diagonal.
-void calculate_triangles() {
+void calculate_triangles()
+{
     int triangles_count = 0;
-    int** mult = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
+    int **mult = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
     if (mult == NULL) {
       printf("Error: malloc for mult failed.\n");
       exit(1);
     }
-    int* ptr = (int*)(mult + nodes_count);
+    int *ptr = (int*)(mult + nodes_count);
     for (int i = 0; i < nodes_count; i++) {
         mult[i] = (ptr + nodes_count * i);
         for (int j = 0; j < i; j++) {
@@ -63,7 +64,8 @@ void calculate_triangles() {
 }
 
 // This function initializes the Graph matrix, by reading the input file.
-void initialize_matrix() {
+void initialize_matrix()
+{
     int i,j,fscanf_result;
     double w;
     matrix = (int**)malloc(sizeof(int*) * nodes_count + sizeof(int) * nodes_count * nodes_count);
@@ -71,7 +73,7 @@ void initialize_matrix() {
       printf("Error: malloc for matrix failed.\n");
       exit(1);
     }
-    int* ptr = (int*)(matrix + nodes_count);
+    int *ptr = (int*)(matrix + nodes_count);
     for(i = 0; i < nodes_count; i++) {
         matrix[i] = (ptr + nodes_count * i);        
         for (j = 0; j < nodes_count; j++) {
@@ -94,8 +96,9 @@ void initialize_matrix() {
 
 // Auxiliary function that displays a message in case of wrong input parameters.
 // Inputs:
-//      char* compiled_name: Programms compiled name.
-void syntax_message(char* compiled_name) {
+//      char *compiled_name: Programms compiled name.
+void syntax_message(char *compiled_name)
+{
     printf("Correct syntax:\n");
     printf("%s <input-file> \n", compiled_name);
     printf("where: \n");
@@ -105,12 +108,13 @@ void syntax_message(char* compiled_name) {
 // This function checks run-time parameters validity and
 // retrieves D-step value, input and output file names.
 // Inputs:
-//      char** argv: The run-time parameters.
+//      char **argv: The run-time parameters.
 // Output:
 //      1 --> Parameters read succussfully.
 //      0 --> Something went wrong.
-int read_parameters(char** argv) {
-    char* input_filename = argv[1];
+int read_parameters(char **argv)
+{
+    char *input_filename = argv[1];
     if (input_filename == NULL) {
         printf("Input file parameter missing.\n");
         syntax_message(argv[0]);
@@ -130,7 +134,8 @@ int read_parameters(char** argv) {
 // This function reduces local triangles counts to master process P0.
 // If all process have been assigned with blocks, MPI_Reduce is used,
 // else each assigned slave process sends its local triangles count to the master process.
-void reduce_triangles_counts() {
+void reduce_triangles_counts()
+{
     int total_triangles=0;
     if (blocks_count==size) {
         MPI_Reduce(&triangles_count, &total_triangles, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);        
@@ -154,7 +159,8 @@ void reduce_triangles_counts() {
 
 // In this function, master process calculates its local triangles count, by performing 
 // the (M*M).*M calculation, based on the algorithm.
-void calculate_local_triangles_master() {
+void calculate_local_triangles_master()
+{
     int i,j,k;
     for (i = 1; i < q; i++) {
         MPI_Send(&block[0][0], n*n, MPI_INT, qmap[i][0], 0, MPI_COMM_WORLD);
@@ -186,15 +192,16 @@ void calculate_local_triangles_master() {
 
 // In this function, each slave process calculates is local triangles count, by performing
 // the (M*M).*M calculation, based on the algorithm.
-void calculate_local_triangles_slave() {
+void calculate_local_triangles_slave()
+{
     int i,j,k,b;
     triangles_count = 0;
-    int** mult = (int **)malloc(sizeof(int *) * n + sizeof(int) * n * n);
+    int **mult = (int**)malloc(sizeof(int *) * n + sizeof(int) * n * n);
     if (mult == NULL) {
       printf("Error: malloc for mult failed.\n");
       exit(1);
     }
-    int* mult_ptr = (int *)(mult + n);
+    int *mult_ptr = (int*)(mult + n);
 
     for (i = 0; i < n; i++) {
         mult[i] = (mult_ptr + n * i);
@@ -214,7 +221,7 @@ void calculate_local_triangles_slave() {
     
     // Computing remaining Block(assigned) for processes in the Q map diagonal, as multiplication_blocks 
     // and el_multiplication_blocks matrices are not the same size.
-    if (q_i==q_j) {
+    if (q_i == q_j) {
         for (i = 0; i < n; i++) {
             for (j = 0; j < n; j++) {
                 mult[i][j] = 0;    
@@ -238,7 +245,8 @@ void calculate_local_triangles_slave() {
 // Blocks, based on the Q Map. Each process requires blocks from the row of its column
 // in the Q Map, for the matrix multiplication, and the previous blocks of its row in the Q Map,
 // for the multiplication per element.
-void receive_blocks_from_other_processes() {
+void receive_blocks_from_other_processes()
+{
     int i,j,k;
     MPI_Status status;
 
@@ -248,19 +256,19 @@ void receive_blocks_from_other_processes() {
       printf("Error: malloc for multiplication_blocks failed.\n");
       exit(1);
     }
-    int* multiplication_blocks_ptr = (int*)(multiplication_blocks + n);
+    int *multiplication_blocks_ptr = (int*)(multiplication_blocks + n);
     el_multiplication_blocks = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * ((q_j+1)*n));
     if (el_multiplication_blocks == NULL) {
       printf("Error: malloc for el_multiplication_blocks failed.\n");
       exit(1);
     }
-    int* el_multiplication_blocks_ptr = (int*)(el_multiplication_blocks + n);
-    int** buffer = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * n);
+    int *el_multiplication_blocks_ptr = (int*)(el_multiplication_blocks + n);
+    int **buffer = (int**)malloc(sizeof(int*) * n + sizeof(int) * n * n);
     if (buffer == NULL) {
       printf("Error: malloc for buffer failed.\n");
       exit(1);
     }
-    int* buffer_ptr = (int*)(buffer + n);
+    int *buffer_ptr = (int*)(buffer + n);
     for (i = 0; i < n; i++) {
         multiplication_blocks[i] = (multiplication_blocks_ptr + ((q_j+1)*n) * i);
         el_multiplication_blocks[i] = (el_multiplication_blocks_ptr + ((q_j+1)*n) * i);
@@ -327,14 +335,15 @@ void receive_blocks_from_other_processes() {
 }
 
 // This function retrieves Q mapping from master process.
-void retrieve_q_mapping() {
+void retrieve_q_mapping()
+{
     int i,j;
     qmap = (int**)malloc(sizeof(int*) * q + sizeof(int) * q * q);
     if (qmap == NULL) {
       printf("Error: malloc for qmap failed.\n");
       exit(1);
     }
-    int* qptr = (int*)(qmap + q);
+    int *qptr = (int*)(qmap + q);
     for (i = 0; i < q; i++) {
         qmap[i] = (qptr + q * i);
     }
@@ -353,7 +362,8 @@ void retrieve_q_mapping() {
 }
 
 // This function retrieves Process assigned Block.
-void receive_block() {
+void receive_block()
+{
     int i,j,k;
     MPI_Status status;
     // Retrieve Block size in order to allocate memory for retrieving the Block.
@@ -372,7 +382,8 @@ void receive_block() {
 }
 
 // This function, used by master process, calculates Q mapping and send each process its assigned Block.
-void scatter_blocks() {
+void scatter_blocks()
+{
     int i,j,p,q_row,q_column,p_row,p_column,counter;
     
     qmap = (int**)malloc(sizeof(int*) * q + sizeof(int) * q * q);
@@ -380,7 +391,7 @@ void scatter_blocks() {
       printf("Error: malloc for qmap failed.\n");
       exit(1);
     }
-    int* qptr = (int*)(qmap + q);
+    int *qptr = (int*)(qmap + q);
     for (i = 0; i < q; i++) {
         qmap[i] = (qptr + q * i);
     }
@@ -393,7 +404,7 @@ void scatter_blocks() {
       printf("Error: malloc for block failed.\n");
       exit(1);
     }
-    int* ptr = (int*)(block + n);
+    int *ptr = (int*)(block + n);
     for (i=0; i<n; i++) {
         block[i] = (ptr + n * i);
     }
@@ -405,9 +416,9 @@ void scatter_blocks() {
     //            [1, 4, 0, 0]
     //            [2, 5, 7, 0]
     //            [3, 6, 8, 9]
-    q_row=1;
-    q_column=0;
-    counter=0;
+    q_row = 1;
+    q_column = 0;
+    counter = 0;
     for (p = 1; p < size; p++) {
         if (counter < blocks_count-1) {
             p_row=0;
@@ -443,7 +454,8 @@ void scatter_blocks() {
     MPI_Bcast(&qmap[0][0], q*q, MPI_INT, 0, MPI_COMM_WORLD);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     MPI_Init(&argc,&argv);
     MPI_Comm_rank(MPI_COMM_WORLD,&rank);
     MPI_Comm_size(MPI_COMM_WORLD,&size);

@@ -60,6 +60,36 @@ Execution:
 % mpiexec -np {processes} ./mpi_triangles_counting {input_file}
 ```
 
+## Execution examples
+### Normal code
+```
+❯ make
+Executing normal code...
+gcc -o triangles_counting triangles_counting.c
+./triangles_counting grph_triangles
+Counting Triangles of Graph retrieved from input file: grph_triangles
+Nodes count: 1000
+Algorithm started, please wait...
+Graph contains: 14 triangles
+Algorithm finished!
+Time spend: 1.403673 secs
+Program terminates.
+```
+
+### MPI code
+```
+❯ make mpi
+Executing MPI code...
+mpicc -lm -o mpi_triangles_counting mpi_triangles_counting.c
+mpiexec -np 4 ./mpi_triangles_counting grph_triangles
+Counting Triangles of Graph retrieved from input file: grph_triangles
+Nodes count: 1000
+Algorithm started, please wait...
+Graph contains: 14 triangles
+Algorithm finished!
+Time spend: 1.029489 secs
+```
+
 ## References
 [1] S. Acer, A. Yaşar, S. Rajamanickam, M. Wolf and Ü. V. Catalyürek, "Scalable Triangle Counting on Distributed-Memory Systems," 2019 IEEE High Performance Extreme Computing Conference (HPEC), 2019, pp. 1-5, doi: 10.1109/HPEC.2019.8916302.
 <br>

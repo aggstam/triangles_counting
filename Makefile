@@ -13,3 +13,5 @@ mpi:
 
 clean:
 	rm -f triangles_counting mpi_triangles_counting
+
+.PHONY: all mpi clean

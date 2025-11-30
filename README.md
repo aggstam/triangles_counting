@@ -18,52 +18,52 @@ Both version can be invocted via the Makefile, or by directly compiling and exec
 
 ### Make usage
 #### Normal code
-```
-% make
+```shell
+$ make
 ```
 To include a different input file:
-```
-% make FILE={file_path}
+```shell
+$ make FILE={file_path}
 ```
 
 #### MPI code
-```
-% make mpi
+```shell
+$ make mpi
 ```
 To configure different how many processes to use:
-```
-% make mpi PROCESSES={processes}
+```shell
+$ make mpi PROCESSES={processes}
 ```
 To include a different input file:
-```
-% make mpi FILE={file_path}
+```shell
+$ make mpi FILE={file_path}
 ```
 
 ### Direct usage
 #### Normal code
 Compilation:
-```
-% gcc -o triangles_counting triangles_counting.c
+```shell
+$ gcc -o triangles_counting triangles_counting.c
 ```
 Execution:
-```
-% ./triangles_counting {input_file}
+```shell
+$ ./triangles_counting {input_file}
 ```
 
 #### MPI code
 Compilation:
-```
-% mpicc -lm -o mpi_triangles_counting mpi_triangles_counting.c
+```shell
+$ mpicc -lm -o mpi_triangles_counting mpi_triangles_counting.c
 ```
 Execution:
-```
-% mpiexec -np {processes} ./mpi_triangles_counting {input_file}
+```shell
+$ mpiexec -np {processes} ./mpi_triangles_counting {input_file}
 ```
 
 ## Execution examples
 ### Normal code
-```
-❯ make
+```shell
+$ make
 Executing normal code...
 gcc -o triangles_counting triangles_counting.c
 ./triangles_counting grph_triangles
@@ -77,8 +77,8 @@ Program terminates.
 ```
 
 ### MPI code
-```
-❯ make mpi
+```shell
+$ make mpi
 Executing MPI code...
 mpicc -lm -o mpi_triangles_counting mpi_triangles_counting.c
 mpiexec -np 4 ./mpi_triangles_counting grph_triangles
